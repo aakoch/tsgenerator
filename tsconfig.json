@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "module": "node16",
+  "moduleResolution": "bundler",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["es2023", "dom"],
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+}
