@@ -4,7 +4,7 @@ import { TagHandler } from "./tag-handler.js";
 
 export class GenericTypeHandler {
   handle(node: FooDogNode): string {
-    return `No code to handle node with val: ${node.val}, source: ${node.source}, lineNumber: ${node.lineNumber}, depth: ${node.depth}`;
+    throw new Error(`No code to handle node with val: ${node.val}, source: ${node.source}, lineNumber: ${node.lineNumber}, depth: ${node.depth}`)
   }
 
   visit(node: FooDogNode | null, xpath: string = '/'): string {
