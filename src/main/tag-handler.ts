@@ -47,12 +47,12 @@ export class TagHandler extends GenericTypeHandler {
     }
   }
 
-  nodeToHTML(node: FooDogNode): string {
+  nodeToHTML(node: FooDogNode): string | undefined {
     if (node.type === 'tag') {
       const innerHTML = node.children!.length > 0 ? node.children!.map(child => this.nodeToHTML(child)).join('') : node.val;
       return `<${node.name}>${innerHTML}</${node.name}>`;
     } else {
-      return node.val || "";
+      return node.val;
     }
   }
 
