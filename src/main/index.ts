@@ -226,10 +226,23 @@ export class Generator {
 
   fromJson(json: any): any {
     debug('Entering fromObject with json=', json);
-    const node = this.jsonToFooDogNode(json)
-    let typeHandler = getTypeHandler(node.type);
-    debug('typeHandler=', typeHandler);
-    return typeHandler.handle(node)
+    
+    if (Array.isArray(json)) {
+      const nodes: FooDogNode[] = json.map((item) : FooDogNode => { return this.jsonToFooDogNode(item) });
+      const outputArray: string[] = []
+      for (const node of nodes) {
+        let typeHandler = getTypeHandler(node.type);
+        debug('typeHandler=', typeHandler);
+        outputArray.push(typeHandler.handle(node))
+      }
+      return outputArray.join("")
+    }
+    else {
+      const node = this.jsonToFooDogNode(json)
+      let typeHandler = getTypeHandler(node.type);
+      debug('typeHandler=', typeHandler);
+      return typeHandler.handle(node)
+    }
 
 
     // let children = []
