@@ -6,6 +6,7 @@
     "types": ["node"],
     "lib": ["es2023", "dom"],
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "build",
+    "isolatedModules": true
   },
 }

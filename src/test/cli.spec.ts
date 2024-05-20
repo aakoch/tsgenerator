@@ -1,6 +1,6 @@
 import t from 'tap'
 // import {Generator} from '../index.js'
-import {printUsage} from '../cliHelper.js'
+import {printUsage} from '../main/cliHelper.js'
 
 t.test('print usage test', t => {
 

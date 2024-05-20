@@ -1,6 +1,6 @@
 import t from 'tap'
 // import { CliTransformer } from '../cliTransformer.js'
-import { Generator } from '../index.js'
+import { Generator } from '../main/index.js'
 
 t.test('basic tag test with no attributes', t => {
   const g = new Generator();

@@ -4,7 +4,7 @@ import debugFunc from 'debug'
 const debug = debugFunc('generator:run.spec.ts')
 
 // import * as adam from '@tapjs/tsx'
-import {compile, run} from '../run.js'
+import {compile, run} from '../main/run.js'
 
 t.test('test simple return', t => {
   let func = compile("return a", ['a'])

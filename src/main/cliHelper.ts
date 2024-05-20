@@ -2,9 +2,8 @@ import {fileURLToPath} from 'url';
 import path from 'path';
 import debugFunc from 'debug'
 import {Chalk, chalkStderr, supportsColorStderr} from 'chalk';
-// import generator from './index.js'
 import {CliTransformer} from './cliTransformer.js'
-import {parseArguments} from '@foo-dog/utils'
+import {parseArguments} from "@foo-dog/utils";
 
 const debug = debugFunc('generator')
 
