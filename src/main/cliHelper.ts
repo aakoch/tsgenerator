@@ -4,6 +4,7 @@ import debugFunc from 'debug'
 import {Chalk, chalkStderr, supportsColorStderr} from 'chalk';
 import {CliTransformer} from './cliTransformer.js'
 import {parseArguments} from "@foo-dog/utils";
+import {inspect} from "util";
 
 const debug = debugFunc('generator')
 
@@ -63,10 +64,9 @@ export async function run(): Promise<void> {
     // }
   } catch (e: any) {
     if (supportsColorStderr) {
-      console.error(chalkStderr(chalk.red(e.message)))
+      console.error(chalkStderr(chalk.red(e.message) + chalk.cyan("\noptions:" + inspect(options, false, 3, true))))
     } else {
-      console.error('*'.repeat(30) + '\n' + e.message)
+      console.error('*'.repeat(30) + '\n' + e.message, e)
     }
-    console.error(e)
   }
 }

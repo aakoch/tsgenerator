@@ -1,11 +1,15 @@
 import debugFunc from 'debug'
 import {HTMLDivElement, HTMLElement,} from './dom-interfaces.js';
-import {FooDogNode, FooDogNodeType} from "./@foo-dog/foo-dog-node.js";
+import {Attribute, FooDogNode, FooDogNodeType} from "./@foo-dog/foo-dog-node.js";
 import {inspect} from "util";
 import assert from "node:assert";
 import {TypeHandler} from "./@foo-dog/type-handler.js";
 import {TagHandler} from "./tag-handler.js";
 import {GenericTypeHandler} from "./generic-type-handler.js";
+import {not} from "tap";
+import {TagNode} from "./tag-node.js";
+import {GenericNode} from "./generic-node.js";
+import {TypeHandlerFactory} from './type-handler-factory.js'
 // import { JSDOM } from 'jsdom'
 
 const debug = debugFunc('generator: index.ts')
@@ -116,6 +120,7 @@ export function run() {
 }
 
 function getTypeHandler(type: FooDogNodeType): TypeHandler {
+  debug("getTypeHandler(): type=" + type)
   if (type === 'tag') {
     return new TagHandler()
   }
@@ -124,38 +129,61 @@ function getTypeHandler(type: FooDogNodeType): TypeHandler {
   }
 }
 
+function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]) {
+  obj[key] = value;
+  
+}
+
+function setPropertyWithSetter<T>(obj: T, key: keyof T, value: any) {
+  Object.defineProperty(obj, key, {
+    value,
+    writable: true,
+    enumerable: true,
+    configurable: true
+  });
+}
+
 class FooDogNodeFactory {
-  private static BasicFooDogNode = class implements FooDogNode {
+  
+  static createNode(type: FooDogNodeType, futureNode: any): FooDogNode {
+    debug('createNode(): futureNode=' + inspect(futureNode, false, 30, true))
+    let node: FooDogNode;
+    if (type === "tag") {
+      node = new TagNode();
+    }
+    else if (type === "text") {
+      node = new (class extends GenericNode {
+        constructor() {
+          super('text')
+        }
+
+        getHandler(): TypeHandler {
+          // TODO: this is duplicated in another place
+          return new (class extends GenericTypeHandler {
+            handle(node: FooDogNode): string {
+              return node.val!;
+            }
+          })();
+        }
+      })();
+    }
+    else {
+      node = new GenericNode(type);
+    }
+
+    for (const key of Object.keys(futureNode)) {
+      debug(`createNode(): {key: ${key}, value: ${futureNode[key]}`);
+      if (futureNode[key]) {
+        setPropertyWithSetter(node, key as keyof FooDogNode, futureNode[key]);
+      }
+    }
     
-    val: string;
-    type: FooDogNodeType;
-    name?: string;
-    source: string;
-    lineNumber: number;
-    depth: number;
-    children: FooDogNode[];
-
-    constructor(val: string, type: FooDogNodeType, source: string, lineNumber: number, depth: number, name?: string) {
-      this.val = val;
-      this.type = type;
-      this.name = name;
-      this.source = source;
-      this.lineNumber = lineNumber;
-      this.depth = depth;
-      this.children = [];
-    }
-
-    addChild(child: FooDogNode) {
-      this.children.push(child);
-    }
-    
-    getHandler(): TypeHandler {
-      return new GenericTypeHandler();
-    }
-  };
-
-  static createNode(val: string, type: FooDogNodeType, source: string, lineNumber: number, depth: number, name?: string): FooDogNode {
-    return new this.BasicFooDogNode(val, type, source, lineNumber, depth, name);
+    // for (const key in node) {
+    //   // setProperty<FooDogNode, FooDogNodeType>(node, key, futureNode[key]);
+    //   debug(`createNode(): {key: ${key}, value: ${futureNode[key]}`);
+    //   setPropertyWithSetter(node, key as keyof FooDogNode, futureNode[key]);
+    // }
+    return node;
   }
 }
 
@@ -213,35 +241,37 @@ export class Generator {
 
 
 // Function to convert a JSON object to a tree of FooDogNode
-  jsonToFooDogNode = function jsonToFooDogNode(json: any): FooDogNode {
-    const node = FooDogNodeFactory.createNode(json.val, json.type, json.source, json.lineNumber, json.depth, json.name);
-    if (json.children) {
-      json.children.forEach((childJson: any) => {
-        node.addChild(jsonToFooDogNode(childJson));
-      });
+  objectToFooDogNode = function objectToFooDogNode(obj: any): FooDogNode {
+    debug('objectToFooDogNode(): obj=' + inspect(obj, false, 30, true))
+    const node = FooDogNodeFactory.createNode(obj.name, obj);
+    if (obj.children) {
+      for (let i = 0; i < obj.children.length; i++){
+        // const childJson: any = obj.children[i];
+        obj.children[i] = objectToFooDogNode(obj.children[i]);
+      }
     }
     return node;
   }
 
 
-  fromJson(json: any): any {
-    debug('Entering fromObject with json=', json);
+  fromJson(json: [] | object): any {
+    debug('Entering fromObject with json=', inspect(json, false, 30, true));
     
     if (Array.isArray(json)) {
-      const nodes: FooDogNode[] = json.map((item) : FooDogNode => { return this.jsonToFooDogNode(item) });
+      const nodes: FooDogNode[] = json.map((item) : FooDogNode => { return this.objectToFooDogNode(item) });
+      debug('fromJson(): nodes=' + inspect(nodes, false, 30, true))
       const outputArray: string[] = []
       for (const node of nodes) {
         let typeHandler = getTypeHandler(node.type);
-        debug('typeHandler=', typeHandler);
-        outputArray.push(typeHandler.handle(node))
+        outputArray.push(typeHandler.visit(node, ''))
       }
       return outputArray.join("")
     }
     else {
-      const node = this.jsonToFooDogNode(json)
+      const node = this.objectToFooDogNode(json)
+      debug('fromJson(): node=' + inspect(node, false, 30, true))
       let typeHandler = getTypeHandler(node.type);
-      debug('typeHandler=', typeHandler);
-      return typeHandler.handle(node)
+      return typeHandler.visit(node, '')
     }
 
 
@@ -267,6 +297,11 @@ export class Generator {
     //
     // return outer
   }
+}
+
+
+async function jsonStringToObject(str: string): Promise<object> {
+  return {}
 }
 
 // function categorize(node_: {

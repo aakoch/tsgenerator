@@ -4,7 +4,7 @@
   "description": "Convert ASM to HTML",
   "scripts": {
     "test": "tap run src/test/*.spec.ts",
-    "build": "parcel build",
+    "build": "parcel build --no-cache",
     "check": "tsc --noEmit"
   },
   "exports": {
@@ -50,6 +50,7 @@
       "source": "src/main/index.ts",
       "distDir": "dist",
       "isLibrary": true,
+      "optimize": false,
       "context": "node",
       "outputFormat": "esmodule"
     },
@@ -57,6 +58,7 @@
       "source": "src/main/cli.ts",
       "distDir": "dist",
       "isLibrary": true,
+      "optimize": false,
       "context": "node",
       "outputFormat": "esmodule"
     }

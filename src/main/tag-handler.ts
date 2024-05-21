@@ -1,7 +1,7 @@
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import {inspect} from "util";
 import debugFunc from "debug";
 import {GenericTypeHandler} from "./generic-type-handler.js";
+import {TagNode} from "./tag-node.js";
 
 const debug = debugFunc("tsgenerator: tag-handler")
 
@@ -31,32 +31,33 @@ export class TagHandler extends GenericTypeHandler {
     this.collectedValues = [];
   }
 
-  handle(node: FooDogNode): string {
-    if (node.type === 'tag') {
-      if (!node.val && (!node.children || node.children.length === 0)) {
-        throw new Error(`Tag node must have either 'val' or 'children' attribute. Node: ${JSON.stringify(node)}`);
+  handle(node: TagNode): string {
+    if (!node.val && (!node.children || node.children.length === 0) && (!node.attrs || node.attrs.length === 0)) {
+      throw new Error(`Tag node must have either 'val', 'children' or 'attrs'. Node: ${inspect(node)}`);
+    }
+    debug("node=" + inspect(node, false, 2, true));
+    
+    // Collect the HTML representation
+    let innerHTML: string | undefined;
+    if (node.children && node.children.length > 0) {
+      debug('node.children=' + node.children)
+      debug('node.children.length=' + node.children.length)
+      let arr = [];
+      for (let i = 0; i < node.children.length; i++) {
+        arr.push(this.visit(node.children[i], ''))
       }
-      // Collect the HTML representation
-      const innerHTML = node.children!.length > 0 ? node.children!.map(child => this.nodeToHTML(child)).join('') : node.val;
-      const tagString = `<${node.name}>${innerHTML}</${node.name}>`;
-      this.collectedValues.push(tagString);
-      return tagString;
+      innerHTML = arr.join('');
+      // innerHTML = node.children!.map(child => this.nodeToHTML(child,)).join('');
     } else {
-      // Delegate to the parent class for non-tag nodes
-      return super.handle(node);
+      innerHTML = node.val;
     }
+    
+    
+    const tagString = `<${node.name}>${innerHTML}</${node.name}>`;
+    return tagString;
   }
 
-  nodeToHTML(node: FooDogNode): string | undefined {
-    if (node.type === 'tag') {
-      const innerHTML = node.children!.length > 0 ? node.children!.map(child => this.nodeToHTML(child)).join('') : node.val;
-      return `<${node.name}>${innerHTML}</${node.name}>`;
-    } else {
-      return node.val;
-    }
-  }
-
-  getCollectedValues(): string[] {
-    return this.collectedValues;
-  }
+  // nodeToHTML(node: FooDogNode): string | undefined {
+  //   return this.visit(node, '')
+  // }
 }

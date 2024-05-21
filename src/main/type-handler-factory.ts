@@ -3,7 +3,7 @@ import { TypeHandler } from "./@foo-dog/type-handler.js";
 import {GenericTypeHandler} from "./generic-type-handler.js";
 import { TagHandler } from "./tag-handler.js";
 
-class TypeHandlerFactory {
+export class TypeHandlerFactory {
 
   static createHandler(node: FooDogNode, xpath: string): TypeHandler {
     let handler: TypeHandler;
@@ -12,6 +12,14 @@ class TypeHandlerFactory {
         throw new Error(`Tag node must have either 'val' or 'children' attribute. Node: ${JSON.stringify(node)}, XPath: ${xpath}`);
       }
       handler = new TagHandler();
+    } else if (node.type === 'text') {
+      handler =
+          new (class extends GenericTypeHandler {
+
+            handle(node: FooDogNode): string {
+              return node.val!;
+            }
+          })();
     } else {
       handler = new GenericTypeHandler();
     }

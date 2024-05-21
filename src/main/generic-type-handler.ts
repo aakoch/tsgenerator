@@ -1,27 +1,28 @@
 import {TypeHandler} from "./@foo-dog/type-handler.js";
 import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
-import { TagHandler } from "./tag-handler.js";
+import {inspect} from "util";import debugFunc from 'debug'
 
-export class GenericTypeHandler {
+const debug = debugFunc('generator: generic-type-handler.ts')
+
+export class GenericTypeHandler implements TypeHandler {
   handle(node: FooDogNode): string {
-    throw new Error(`No code to handle node with val: ${node.val}, source: ${node.source}, lineNumber: ${node.lineNumber}, depth: ${node.depth}`)
+    return `TODO: implement node type '${node.type}'`
+    // throw new Error(`No code to handle node: ${inspect(node)}`)
   }
 
   visit(node: FooDogNode | null, xpath: string = '/'): string {
     if (!node) return '';
 
-    // Create an appropriate handler for the current node
-    let handler: TypeHandler = node.getHandler();
-    
     // Handle the current node and collect the result
-    let result = handler.handle(node);
+    let result = this.handle(node);
+    debug("result=" + inspect(result, false, 1, true));
 
-    // Recursively visit each child and collect their results
-    let length2 = !node.children ? 0 : node.children.length;
-    for (let i = 0; i < length2; i++) {
-      const childXPath = `${xpath}/children[${i + 1}]`;
-      result += handler.visit(node.children![i], childXPath);
-    }
+    // // Recursively visit each child and collect their results
+    // let length = !node.children ? 0 : node.children.length;
+    // for (let i = 0; i < length; i++) {
+    //   const childXPath = `${xpath}/children[${i + 1}]`;
+    //   result += this.visit(node.children![i], childXPath);
+    // }
 
     return result;
   }

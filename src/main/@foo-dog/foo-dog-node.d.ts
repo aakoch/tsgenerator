@@ -1,4 +1,8 @@
-export type FooDogNodeType = 'rootType' | 'tag' | 'nonTagType';
+export type FooDogNodeType = 'rootType' | 'tag' | 'nonTagType' | 'text';
+
+export interface Attribute {
+  
+}
 
 export interface FooDogNode {
   name?: string;
@@ -8,6 +12,7 @@ export interface FooDogNode {
   lineNumber?: number; // optional for testing for now
   children?: FooDogNode[];
   depth?: number // optional for testing for now
+  attrs?: Attribute[];
   getHandler(): TypeHandler;
   addChild(fooDogNode: FooDogNode): void;
 }

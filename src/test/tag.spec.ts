@@ -1,6 +1,6 @@
 import t from 'tap'
 // import { CliTransformer } from '../cliTransformer.js'
-import { Generator } from '../main/index.js'
+import {Generator} from '../main/index.js'
 
 t.test('basic tag test with no attributes', t => {
   const g = new Generator();
@@ -63,6 +63,37 @@ t.test('doubly-nested tag test', t => {
     ],
     "depth": 2
   }), '<body><h2><span>Title</span></h2></body>')
+  t.end()
+});
+
+
+t.test('basic.json tag test', t => {
+  const g = new Generator();
+  t.equal(g.fromJson([
+    {
+      "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
+      "name": "html",
+      "type": "tag",
+      "lineNumber": 1,
+      "children": [
+        {
+          "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
+          "name": "body",
+          "type": "tag",
+          "lineNumber": 2,
+          "children": [
+            {
+              "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
+              "name": "h1",
+              "type": "tag",
+              "val": "Title",
+              "lineNumber": 3,
+              "depth": 3
+            }],
+          "depth": 2
+        }],
+      "depth": 1
+    }]), '<html><body><h1>Title</h1></body></html>')
   t.end()
 });
 

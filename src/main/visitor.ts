@@ -46,7 +46,6 @@ class GenericFooDogNode extends AbstractFooDogNode {
   }
 }
 
-// Concrete implementation of TagFooDogNode
 class TagFooDogNode extends GenericFooDogNode {
 
   constructor(val: string, source: string, lineNumber: number, depth: number, name?: string) {
