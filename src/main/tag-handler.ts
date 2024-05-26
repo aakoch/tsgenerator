@@ -1,7 +1,8 @@
 import {inspect} from "util";
 import debugFunc from "debug";
 import {GenericTypeHandler} from "./generic-type-handler.js";
-import {TagNode} from "./tag-node.js";
+import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
+import {compile, evil} from "./run.js";
 
 const debug = debugFunc("tsgenerator: tag-handler")
 
@@ -24,40 +25,47 @@ const debug = debugFunc("tsgenerator: tag-handler")
 // }
 
 export class TagHandler extends GenericTypeHandler {
-  collectedValues: string[];
+  collectedValues: string[] = [];
 
-  constructor() {
-    super();
-    this.collectedValues = [];
+  handleStart(): string {
+    if (!this.node.val && (!this.node.children || this.node.children.length === 0) && (!this.node.attrs || this.node.attrs.length === 0)) {
+      throw new Error(`Tag node must have either 'val', 'children' or 'attrs'. Node: ${inspect(this.node, false, 30, true)}`);
+    }
+    debug("node=" + inspect(this.node, false, 2, true));
+    let variables = this.node;
+    debug('handleStart(): this.node=', inspect(this.node, false, 30, true))
+    let func = compile("arr.push('<');arr.push(name);arr.push('>');", ['name'], 'arr')
+    debug('handleStart(): func=', func.toString())
+    let result = func(this.node.name);
+    debug('handleStart(): result=', result)
+    return result;
   }
 
-  handle(node: TagNode): string {
-    if (!node.val && (!node.children || node.children.length === 0) && (!node.attrs || node.attrs.length === 0)) {
-      throw new Error(`Tag node must have either 'val', 'children' or 'attrs'. Node: ${inspect(node)}`);
-    }
-    debug("node=" + inspect(node, false, 2, true));
-    
-    // Collect the HTML representation
-    let innerHTML: string | undefined;
-    if (node.children && node.children.length > 0) {
-      debug('node.children=' + node.children)
-      debug('node.children.length=' + node.children.length)
-      let arr = [];
-      for (let i = 0; i < node.children.length; i++) {
-        arr.push(this.visit(node.children[i], ''))
-      }
-      innerHTML = arr.join('');
-      // innerHTML = node.children!.map(child => this.nodeToHTML(child,)).join('');
-    } else {
-      innerHTML = node.val;
-    }
-    
-    
-    const tagString = `<${node.name}>${innerHTML}</${node.name}>`;
-    return tagString;
+  handleEnd(): string {
+    let variables = this.node;
+    let func = compile("arr.push(val);arr.push('</');arr.push(name);arr.push('>');", ['val', 'name'], 'arr')
+    let result = func(this.node.val ?? '', this.node.name);
+    return result;
   }
 
   // nodeToHTML(node: FooDogNode): string | undefined {
   //   return this.visit(node, '')
   // }
+
+  handle(node: FooDogNode, xpath: string): Function {
+    let contents;
+    let f;
+    debug("node.val=", node.val)
+    if (node.assignment) { //} || (node.val?.startsWith("\"") && node.val?.endsWith("\""))) {
+      f = compile(`returnArray.push("<${node.name}>" + ${node.val} + "</${node.name}>");`, [node.val!]);
+    } else {
+      f = compile(`returnArray.push("<${node.name}>${node.val}</${node.name}>");`);
+    }
+    debug("f=" + f.toString())
+    return f;
+  }
+
+  shouldVisitChildren(): boolean {
+    return this.node.name !== 'pre';
+  }
 }

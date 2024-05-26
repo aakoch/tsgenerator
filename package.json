@@ -1,7 +1,7 @@
 {
   "name": "@foo-dog/tsgenerator",
   "version": "0.1.0",
-  "description": "Convert ASM to HTML",
+  "description": "Convert AST to HTML",
   "scripts": {
     "test": "tap run src/test/*.spec.ts",
     "build": "parcel build --no-cache",

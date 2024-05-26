@@ -35,7 +35,7 @@ t.test('test simple addition', t => {
 });
 
 t.test('test creating a tag', t => {
-  let func = compile(`let tag = "<a href=\\"\\"></a>"; return tag`)
+  let func = compile(`let tag = '<a href=\\"\\"></a>'; return tag;`)
   let r = func("obviously not the correct string")
   debug("r=" + r)
   t.equal(r, "<a href=\"\"></a>")
@@ -43,14 +43,8 @@ t.test('test creating a tag', t => {
 });
 
 t.test('test creating a tag using the run method', t => {
-  let r = run(`let tag = "<a href=\\"\\"></a>"; return tag`)
+  let r = run(`let tag = '<a href=\\"\\"></a>'; return tag;`)
   debug("r=" + r)
   t.equal(r, "<a href=\"\"></a>")
   t.end()
 });
-
-// t.test('async tests work like you would expect', async t => {
-//   t.equal(await myThing.Transform, 'whatever')
-//   // don't have to call t.end(), it'll just end when the
-//   // async stuff is all resolved.
-// })

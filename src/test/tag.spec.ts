@@ -1,6 +1,7 @@
 import t from 'tap'
 // import { CliTransformer } from '../cliTransformer.js'
 import {Generator} from '../main/index.js'
+import {FooDogNode} from "../main/@foo-dog/foo-dog-node.js";
 
 t.test('basic tag test with no attributes', t => {
   const g = new Generator();
@@ -8,7 +9,7 @@ t.test('basic tag test with no attributes', t => {
     name: "h1",
     type: "tag",
     val: "Title test"
-  }), '<h1>Title test</h1>')
+  } as FooDogNode), '<h1>Title test</h1>')
   t.end()
 });
 
@@ -30,7 +31,7 @@ t.test('nested tag test', t => {
       }
     ],
     "depth": 2
-  }), '<body><h2>Title</h2></body>')
+  } as FooDogNode), '<body><h2>Title</h2></body>')
   t.end()
 });
 
@@ -54,7 +55,7 @@ t.test('doubly-nested tag test', t => {
             "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
             "name": "span",
             "type": "tag",
-            "val": "Title",
+            "val": "Title2",
             "lineNumber": 3,
             "depth": 3
           }],
@@ -62,7 +63,7 @@ t.test('doubly-nested tag test', t => {
       }
     ],
     "depth": 2
-  }), '<body><h2><span>Title</span></h2></body>')
+  } as FooDogNode), '<body><h2><span>Title2</span>Title</h2></body>')
   t.end()
 });
 
@@ -93,7 +94,7 @@ t.test('basic.json tag test', t => {
           "depth": 2
         }],
       "depth": 1
-    }]), '<html><body><h1>Title</h1></body></html>')
+    }] as FooDogNode[]), '<html><body><h1>Title</h1></body></html>')
   t.end()
 });
 
