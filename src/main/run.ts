@@ -11,7 +11,7 @@ const compile = function (code: string, variables: string[] = [], arrayName = 'r
 
   let functionString
   if (variables === undefined) { // || Object.empty(variables)) {
-    functionString = 'return ' + code;
+    functionString = 'return (function() { return ' + code + ' })()';
   } else {
     // functionString = 'let ' + arrayName + ' = []; ' + code + '; return ' + arrayName + '.join("")';
     functionString = 'return (function() { let ' + arrayName + ' = []; ' + code + '; return ' + arrayName + '.join("")})()';
@@ -24,7 +24,24 @@ const compile = function (code: string, variables: string[] = [], arrayName = 'r
   } else {
     func = new Function(functionString);
   }
-  
+
+  debug('func=', func.toString())
+  return func;
+}
+
+const compile_new = function (code: string, variables: string[] = [], arrayName = 'returnArray') {
+
+  let functionString = 'return (function() { return ' + code + ' })()';
+  debug('functionString=', functionString.toString())
+
+  let func: Function;
+  debug("...variables=", ...variables)
+  if (variables.length > 0) {
+    func = Function(...variables, functionString);
+  } else {
+    func = new Function(functionString);
+  }
+
   debug('func=', func.toString())
   return func;
 }
@@ -59,6 +76,7 @@ const run = function (code: string, variables?: string[] | object,  arrayName = 
 
 export {
   compile,
+  compile_new,
   run,
   evil
 }
