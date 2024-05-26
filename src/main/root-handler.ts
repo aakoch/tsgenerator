@@ -1,16 +1,17 @@
-import {inspect} from "util";
 import debugFunc from "debug";
-import {GenericTypeHandler} from "./generic-type-handler.js";
 import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
-import {compile, evil, run} from "./run.js";
-import { TypeHandler } from "./@foo-dog/type-handler.js";
+import {evil} from "./run.js";
 import {TypeHandlerFactory} from "./type-handler-factory.js";
+import {TypeHandler} from "./@foo-dog/type-handler.js";
 
 const debug = debugFunc("tsgenerator: root-handler")
 
 
-export class RootTypeHandler extends GenericTypeHandler{
-  
+export class RootTypeHandler implements TypeHandler {
+
+  constructor(private node: FooDogNode) {
+  }
+
   handle(node: FooDogNode, xpath: string): Function {
 
     let strings = this.visitChildren2(node.children!, xpath);
@@ -21,12 +22,7 @@ export class RootTypeHandler extends GenericTypeHandler{
     }).bind(this, strings);
   }
 
-  // visit(node: FooDogNode | null, xpath?: string): string {
-  //   return "RootTypeHandler";
-  //
-  // }
-
-  private visitChildren2 (children: FooDogNode[], xpath: string) {
+  private visitChildren2(children: FooDogNode[], xpath: string) {
     let content: string[] = [];
 
     // Recursively visit each child and collect their results
@@ -35,19 +31,23 @@ export class RootTypeHandler extends GenericTypeHandler{
       const childXPath = `${xpath}/children[${i + 1}]`;
       let childTypeHandler = TypeHandlerFactory.createHandler(children![i], childXPath);
       debug("visitChildren2 [" + i + "]: childTypeHandler=", childTypeHandler.constructor.name)
-      
-      let f = childTypeHandler.handle(children![i], childXPath);
+
+      let f: Function = childTypeHandler.handle(children![i], childXPath);
       debug("visitChildren2 [" + i + "]: f=", f.toString());
       let params = children![i].params;
       debug("visitChildren2 [" + i + "]: params=", params);
-      
-      
+
+
       let result = f(evil(params));
-      
+
       debug("visitChildren2 [" + i + "]: result=", result);
       content.push(result);
     }
     return content;
+  }
+
+  visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+    return this.handle(node, xpath || '')();
   }
 
 }

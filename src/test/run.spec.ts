@@ -1,10 +1,9 @@
 import t from 'tap'
 import debugFunc from 'debug'
+// import * as adam from '@tapjs/tsx'
+import {compile, compile_new, evil, run} from '../main/run.js'
 
 const debug = debugFunc('generator:run.spec.ts')
-
-// import * as adam from '@tapjs/tsx'
-import {compile, run} from '../main/run.js'
 
 t.test('test simple return', t => {
   let func = compile("return a", ['a'])
@@ -46,5 +45,19 @@ t.test('test creating a tag using the run method', t => {
   let r = run(`let tag = '<a href=\\"\\"></a>'; return tag;`)
   debug("r=" + r)
   t.equal(r, "<a href=\"\"></a>")
+  t.end()
+});
+
+t.test('evil 1', t => {
+  let testVar = "'test string'"
+  t.equal(evil(testVar), "test string")
+  t.end()
+});
+
+t.test('compile', t => {
+  let testVar = "'test string'"
+  let compiledVariable = compile_new('testVar', ['testVar']);
+  console.log(compiledVariable)
+  t.equal(compiledVariable.withVar(testVar), "test string")
   t.end()
 });

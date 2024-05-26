@@ -3,6 +3,7 @@ import t from 'tap'
 import {Generator} from '../main/index.js'
 import {FooDogNode} from "../main/@foo-dog/foo-dog-node.js";
 
+t.setTimeout(1000000)
 t.test('basic tag test with no attributes', t => {
   const g = new Generator();
   t.equal(g.fromJson({

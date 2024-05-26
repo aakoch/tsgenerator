@@ -7,7 +7,7 @@ const evil = function evil(fn: any) {
   return new Function('return ' + fn)();
 }
 
-const compile = function (code: string, variables: string[] = [], arrayName = 'returnArray') {
+const compile = function (code: string, variables: string[] = [], arrayName: string = 'returnArray') {
 
   let functionString
   if (variables === undefined) { // || Object.empty(variables)) {
@@ -29,7 +29,9 @@ const compile = function (code: string, variables: string[] = [], arrayName = 'r
   return func;
 }
 
-const compile_new = function (code: string, variables: string[] = [], arrayName = 'returnArray') {
+const compile_new = function (code: string, variables: string[] = [], arrayName = 'returnArray'): Function & {
+  withVar: Function
+} {
 
   let functionString = 'return (function() { return ' + code + ' })()';
   debug('functionString=', functionString.toString())
@@ -43,26 +45,20 @@ const compile_new = function (code: string, variables: string[] = [], arrayName 
   }
 
   debug('func=', func.toString())
-  return func;
+
+  const withVar = function (args: any[]) {
+    return func(evil(args));
+  }
+
+  return Object.assign(func, {withVar: withVar});
 }
 
-// const compile = function (code: string, variables?: { [key: string]: any }, arrayName = 'returnArray') {
-//   let functionString
-//   if (variables === undefined) { // || Object.empty(variables)) {
-//     functionString = 'return ' + code;
-//   } else {
-//     functionString = 'let ' + arrayName + ' = []; ' + code + '; return ' + arrayName + '.join("")';
-//   }
-//   return Function(...(Object.keys(variables ?? {})), functionString);
-// }
-
-const run = function (code: string, variables?: string[] | object,  arrayName = 'returnArray') {
+const run = function (code: string, variables?: string[] | object, arrayName = 'returnArray') {
   try {
     let func;
     if (variables) {
       func = compile(code, Array.isArray(variables) ? variables : Object.keys(variables as object), arrayName)
-    }
-    else {
+    } else {
       func = compile(code)
     }
     const result = func(Object.values(variables ?? {}))

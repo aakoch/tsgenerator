@@ -1,9 +1,7 @@
 import debugFunc from 'debug'
-import {Attribute, FooDogNode, FooDogNodeType} from "./@foo-dog/foo-dog-node.js";
+import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import {inspect} from "util";
 import {TypeHandler} from "./@foo-dog/type-handler.js";
-import {TagHandler} from "./tag-handler.js";
-import {GenericTypeHandler} from "./generic-type-handler.js";
 import {TypeHandlerFactory} from './type-handler-factory.js'
 // import { JSDOM } from 'jsdom'
 
@@ -116,7 +114,7 @@ export function run() {
 
 function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]) {
   obj[key] = value;
-  
+
 }
 
 function setPropertyWithSetter<T>(obj: T, key: keyof T, value: any) {
@@ -251,48 +249,47 @@ export class Generator {
 //   }
 
 
-  fromJson(json: FooDogNode[] | FooDogNode): any {
+  public fromJson(json: FooDogNode[] | FooDogNode): any {
     debug('Entering fromObject with json=', inspect(json, false, 30, true));
-    
+
     if (Array.isArray(json)) {
       const outputArray: string[] = []
       for (const node of json) {
         let typeHandler = TypeHandlerFactory.createHandler(node, '');
-        outputArray.push(typeHandler.visit(node, `["${node.name}"]`))
+        outputArray.push(typeHandler.visit(node, `["${node.name}"]`, this.fromJson.bind(this)))
       }
       return outputArray.join("")
-    }
-    else {
+    } else {
       const node = json;
       debug('fromJson(): node=' + inspect(node, false, 30, true))
       let typeHandler = TypeHandlerFactory.createHandler(node, '');
-      return typeHandler.visit(node, '')
+      return typeHandler.visit(node, '', this.fromJson.bind(this))
     }
   }
 }
 
 
-    // let children = []
-    // if (obj.hasOwnProperty("children")) {
-    //   // children = obj.children
-    // }
-    //
-    //
-    // const node2 = NodeFactory.createNode(obj)
+// let children = []
+// if (obj.hasOwnProperty("children")) {
+//   // children = obj.children
+// }
+//
+//
+// const node2 = NodeFactory.createNode(obj)
 
-    // console.log("node2.val = ", node2.val);
-    // let inner = `${node2.val ?? node2.children.map((c: any) => 
-    //   NodeFactory.createNode(c).outerHTML
-    // )}`
-    // console.log('inner=' + inner)
-    //
-    // let outer = `<${node2.name}>${inner}</${node2.name}>`
-    //
-    // console.log('outer=' + outer)
-    //
-    // // node.innerHTML = obj['val'];`
-    //
-    // return outer
+// console.log("node2.val = ", node2.val);
+// let inner = `${node2.val ?? node2.children.map((c: any) => 
+//   NodeFactory.createNode(c).outerHTML
+// )}`
+// console.log('inner=' + inner)
+//
+// let outer = `<${node2.name}>${inner}</${node2.name}>`
+//
+// console.log('outer=' + outer)
+//
+// // node.innerHTML = obj['val'];`
+//
+// return outer
 
 
 async function jsonStringToObject(str: string): Promise<object> {

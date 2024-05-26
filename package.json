@@ -4,6 +4,9 @@
   "description": "Convert AST to HTML",
   "scripts": {
     "test": "tap run src/test/*.spec.ts",
+    "test tag": "tap run src/test/tag.spec.ts",
+    "test run": "tap run src/test/run.spec.ts",
+    "test mixin": "tap run src/test/mixin.spec.ts",
     "build": "parcel build --no-cache",
     "check": "tsc --noEmit"
   },

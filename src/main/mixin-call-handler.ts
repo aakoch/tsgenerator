@@ -1,14 +1,16 @@
 import {inspect} from "util";
 import debugFunc from "debug";
-import {GenericTypeHandler} from "./generic-type-handler.js";
 import mixinService from "./mixin-service.js";
 import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
-import {compile} from "./run.js";
+import {TypeHandler} from "./@foo-dog/type-handler.js";
 
 const debug = debugFunc("tsgenerator: mixin-call-handler")
 
-export class MixinCallHandler extends GenericTypeHandler {
+export class MixinCallHandler implements TypeHandler {
   collectedValues: string[] = [];
+
+  constructor(private node: FooDogNode) {
+  }
 
   handle(node: FooDogNode, xpath: string): Function {
 
@@ -19,38 +21,23 @@ export class MixinCallHandler extends GenericTypeHandler {
       let mixin = mixinService.findMixin(node.name);
       if (mixin !== undefined) {
         debug("visit: node.params=", node.params);
-        return mixin
+        return mixin //(node.params ?? [])
+        //.bind(this, node.val)
       } else {
-        return () => {`[No mixin in mixin-call-handler named ${node.name}]`};
+        return () => {
+          `[No mixin in mixin-call-handler named ${node.name}]`
+        };
       }
     } else {
       debug('[Error in mixin-call-handler] node:' + inspect(node, false, 20, true));
-      return () => {''}
+      return () => {
+        ''
+      }
     }
-    
-    // debug("handle: node=", node)
-    // let s = this.visit(node, xpath);
-    //
-    // debug("handle: s=", s);
-    //
-    // // let attrs: string[] = [];
-    // return compile("arr.push(s);", ['s'], 'arr');
   }
 
   visit(node: FooDogNode, xpath: string = '/'): string {
-      const f = this.handle(node, xpath);
+    const f = this.handle(node, xpath);
     return f(node.params)
-  }
-  
-  handleStart(): string {
-    return '';
-  }
-
-  handleEnd(): string {
-    return '';
-  }
-
-  shouldVisitChildren(): boolean {
-    return false;
   }
 }

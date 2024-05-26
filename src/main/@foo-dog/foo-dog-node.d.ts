@@ -19,7 +19,7 @@ export interface FooDogNode {
   addChild(fooDogNode: FooDogNode): void;
   
   // mixin calls provide "params" instead of "val"
-  params?: string;
+  params?: any[];
 }
 
 export interface Mixin {
