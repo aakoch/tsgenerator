@@ -37,7 +37,7 @@ export class MixinHandler implements TypeHandler {
     return EMPTY_FUNCTION;
   }
 
-  visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+  async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
     return this.handle(node, xpath || '')();
   }
 

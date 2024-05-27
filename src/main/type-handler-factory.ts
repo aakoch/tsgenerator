@@ -15,7 +15,7 @@ export class TypeHandlerFactory {
     } else if (type === 'text') {
       handler =
           new class implements TypeHandler {
-            visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+            async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
               return this.handle(node, xpath || '')();
             }
 
@@ -26,7 +26,7 @@ export class TypeHandlerFactory {
     } else if (type === 'html_comment') {
       handler =
           new class implements TypeHandler {
-            visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+            async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
               return this.handle(node, xpath || '')();
             }
 
@@ -37,7 +37,7 @@ export class TypeHandlerFactory {
     } else if (type === 'comment') {
       handler =
           new class implements TypeHandler {
-            visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+            async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
               return this.handle(node, xpath || '')();
             }
 
@@ -48,7 +48,7 @@ export class TypeHandlerFactory {
     } else if (type === 'attrs_end') {
       handler =
           new class implements TypeHandler {
-            visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+            async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
               return this.handle(node, xpath || '')();
             }
 

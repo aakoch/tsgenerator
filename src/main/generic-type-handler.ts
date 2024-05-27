@@ -9,7 +9,7 @@ export abstract class GenericTypeHandler implements TypeHandler {
   constructor(protected node: FooDogNode) {
   }
 
-  visit(node: FooDogNode | null, xpath: string = '/'): string {
+  async visit(node: FooDogNode | null, xpath: string = '/'): Promise<string> {
     throw new Error("visit not implemented");
   }
 
