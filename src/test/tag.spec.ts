@@ -4,9 +4,9 @@ import {Generator} from '../main/index.js'
 import {FooDogNode} from "../main/@foo-dog/foo-dog-node.js";
 
 t.setTimeout(1000000)
-t.test('basic tag test with no attributes', t => {
+t.test('basic tag test with no attributes', async t => {
   const g = new Generator();
-  t.equal(g.fromJson({
+  t.equal(await g.fromJson({
     name: "h1",
     type: "tag",
     val: "Title test"
@@ -14,9 +14,9 @@ t.test('basic tag test with no attributes', t => {
   t.end()
 });
 
-t.test('nested tag test', t => {
+t.test('nested tag test', async t => {
   const g = new Generator();
-  t.equal(g.fromJson({
+  t.equal(await g.fromJson({
     "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
     "name": "body",
     "type": "tag",
@@ -37,9 +37,9 @@ t.test('nested tag test', t => {
 });
 
 // t.setTimeout(1000000)
-t.test('doubly-nested tag test', t => {
+t.test('doubly-nested tag test', async t => {
   const g = new Generator();
-  t.equal(g.fromJson({
+  t.equal(await g.fromJson({
     "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
     "name": "body",
     "type": "tag",
@@ -69,9 +69,9 @@ t.test('doubly-nested tag test', t => {
 });
 
 
-t.test('basic.json tag test', t => {
+t.test('basic.json tag test', async t => {
   const g = new Generator();
-  t.equal(g.fromJson([
+  t.equal(await g.fromJson([
     {
       "source": "/Users/aakoch/projects/foo-dog/workspaces/lexing-transformer/build/in/basic.pug",
       "name": "html",

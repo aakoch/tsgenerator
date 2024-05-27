@@ -5,7 +5,7 @@ import debugFunc from 'debug'
 const debug = debugFunc('generator.cliTransformer')
 import chalk from 'chalk';
 const __filename = fileURLToPath(import.meta.url);
-import { run, Generator } from './index.js'
+import { Generator } from './index.js'
 import stream, { TransformCallback } from 'stream'
 import { inspect } from 'util';
 

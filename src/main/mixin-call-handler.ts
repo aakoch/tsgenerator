@@ -36,7 +36,7 @@ export class MixinCallHandler implements TypeHandler {
     }
   }
 
-  visit(node: FooDogNode, xpath: string = '/'): string {
+  async visit(node: FooDogNode, xpath: string = '/'): Promise<string> {
     const f = this.handle(node, xpath);
     return f(node.params)
   }

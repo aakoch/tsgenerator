@@ -1,5 +1,6 @@
 import {inspect} from "util";
 import debugFunc from 'debug'
+import {deprecate} from "node:util";
 
 const debug = debugFunc('tsgenerator:run')
 
@@ -7,13 +8,12 @@ const evil = function evil(fn: any) {
   return new Function('return ' + fn)();
 }
 
-const compile = function (code: string, variables: string[] = [], arrayName: string = 'returnArray') {
+const compile = deprecate(function (code: string, variables: string[] = [], arrayName: string = 'returnArray') {
 
   let functionString
-  if (variables === undefined) { // || Object.empty(variables)) {
+  if (variables === undefined) {
     functionString = 'return (function() { return ' + code + ' })()';
   } else {
-    // functionString = 'let ' + arrayName + ' = []; ' + code + '; return ' + arrayName + '.join("")';
     functionString = 'return (function() { let ' + arrayName + ' = []; ' + code + '; return ' + arrayName + '.join("")})()';
   }
 
@@ -27,17 +27,18 @@ const compile = function (code: string, variables: string[] = [], arrayName: str
 
   debug('func=', func.toString())
   return func;
-}
+}, 'please use compile_new')
 
 const compile_new = function (code: string, variables: string[] = [], arrayName = 'returnArray'): Function & {
   withVar: Function
 } {
 
-  let functionString = 'return (function() { return ' + code + ' })()';
+  let functionString = 'return (function() { ' + code + ' })()';
+  
   debug('functionString=', functionString.toString())
+  debug("...variables=", ...variables)
 
   let func: Function;
-  debug("...variables=", ...variables)
   if (variables.length > 0) {
     func = Function(...variables, functionString);
   } else {
@@ -57,9 +58,9 @@ const run = function (code: string, variables?: string[] | object, arrayName = '
   try {
     let func;
     if (variables) {
-      func = compile(code, Array.isArray(variables) ? variables : Object.keys(variables as object), arrayName)
+      func = compile_new(code, Array.isArray(variables) ? variables : Object.keys(variables as object), arrayName)
     } else {
-      func = compile(code)
+      func = compile_new(code)
     }
     const result = func(Object.values(variables ?? {}))
     debug('result=', result)

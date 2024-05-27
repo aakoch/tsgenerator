@@ -19,15 +19,15 @@ export class TagHandler implements TypeHandler {
     debug("node.val=", node.val)
     if (node.assignment) {
       if (node.val !== undefined) {
-        f = compile_new("['<', '" + node.name + "', '>', val, " + node.val + ", '</', '" + node.name + "', '>'].join('')", ['val', node.val])
+        f = compile_new("return ['<', '" + node.name + "', '>', val, " + node.val + ", '</', '" + node.name + "', '>'].join('')", ['val', node.val])
       } else {
-        f = compile_new("['<', '" + node.name + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
+        f = compile_new("return ['<', '" + node.name + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
       }
     } else {
       if (node.val !== undefined) {
-        f = compile_new("['<', '" + node.name + "', '>', val, '" + node.val + "', '</', '" + node.name + "', '>'].join('')", ['val'])
+        f = compile_new("return ['<', '" + node.name + "', '>', val, '" + node.val + "', '</', '" + node.name + "', '>'].join('')", ['val'])
       } else {
-        f = compile_new("['<', '" + node.name + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
+        f = compile_new("return ['<', '" + node.name + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
       }
     }
 
@@ -37,17 +37,18 @@ export class TagHandler implements TypeHandler {
     return f;
   }
 
-  shouldVisitChildren(): boolean {
-    return this.node.name !== 'pre';
-  }
-
-  visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+  async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
 
     let contents;
     if (node.children !== undefined) {
-      contents = contentCallback!(node.children, xpath);
+      contents = await contentCallback!(node.children, xpath);
     }
 
-    return this.handle(node, xpath, contentCallback)(contents);
+    // if (contents.constructor.name === 'Promise') {
+    //   let p: Promise<any> = contents as Promise<any>;
+    //   return this.handle(node, xpath, contentCallback)(contents);
+    // } else {
+      return this.handle(node, xpath, contentCallback)(contents);
+    // }
   }
 }

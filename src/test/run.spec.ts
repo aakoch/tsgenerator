@@ -41,8 +41,9 @@ t.test('test creating a tag', t => {
   t.end()
 });
 
+t.setTimeout(1000000)
 t.test('test creating a tag using the run method', t => {
-  let r = run(`let tag = '<a href=\\"\\"></a>'; return tag;`)
+  let r = run(` let tag = '<a href=""></a>'; return tag;`)
   debug("r=" + r)
   t.equal(r, "<a href=\"\"></a>")
   t.end()
@@ -56,7 +57,7 @@ t.test('evil 1', t => {
 
 t.test('compile', t => {
   let testVar = "'test string'"
-  let compiledVariable = compile_new('testVar', ['testVar']);
+  let compiledVariable = compile_new('return testVar', ['testVar']);
   console.log(compiledVariable)
   t.equal(compiledVariable.withVar(testVar), "test string")
   t.end()

@@ -46,7 +46,7 @@ export class RootTypeHandler implements TypeHandler {
     return content;
   }
 
-  visit(node: FooDogNode, xpath?: string, contentCallback?: Function): string {
+  async visit(node: FooDogNode, xpath?: string, contentCallback?: Function): Promise<string> {
     return this.handle(node, xpath || '')();
   }
 
