@@ -7,6 +7,8 @@
     "test tag": "tap run src/test/tag.spec.ts",
     "test run": "tap run src/test/run.spec.ts",
     "test mixin": "tap run src/test/mixin.spec.ts",
+    "test attrs": "tap run src/test/attributes.spec.ts",
+    "test unbuf_code": "tap run src/test/unbuf_code.spec.ts",
     "build": "parcel build --no-cache",
     "check": "tsc --noEmit"
   },

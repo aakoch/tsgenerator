@@ -1,9 +1,13 @@
 import debugFunc from "debug";
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
+import {Attribute, FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import {compile_new} from "./run.js";
 import {TypeHandler} from "./@foo-dog/type-handler.js";
 
 const debug = debugFunc("tsgenerator: tag-handler")
+
+function isAttribute(val: string | Attribute[] | undefined): val is Attribute[] {
+  return Array.isArray(<Attribute[]>val);
+}
 
 export class TagHandler implements TypeHandler {
   protected node: FooDogNode;
@@ -17,17 +21,45 @@ export class TagHandler implements TypeHandler {
   handle(node: FooDogNode, xpath?: string, contentCallback?: Function): Function {
     let f;
     debug("node.val=", node.val)
+    let attrs = '';
+    if (node.attrs !== undefined) {
+      attrs += ' '
+      for (const attr of node.attrs) {
+        attrs += attr.name + '="' + attr.val + '"';
+      }
+    }
+    if (node.attrs_start !== undefined) {
+      for (const attr of node.attrs_start) {
+        attrs += ' '  + attr.name + '="' + attr.name + '"';
+      }
+      
+      let attrsEndChildren = node.children?.filter((child: FooDogNode) => {
+        return child.type === 'attrs_end'
+      })
+      
+      if (attrsEndChildren?.length! > 0) {
+        for (const attrsEndChild of attrsEndChildren!) {
+
+          if (isAttribute(attrsEndChild.val)) {
+            for (const attr of attrsEndChild.val!) {
+              attrs += ' ' + attr.name + '="' + attr.name + '"';
+            }
+          }
+        }
+      }
+      
+    }
     if (node.assignment) {
-      if (node.val !== undefined) {
-        f = compile_new("return ['<', '" + node.name + "', '>', val, " + node.val + ", '</', '" + node.name + "', '>'].join('')", ['val', node.val])
+      if (node.val !== undefined && !isAttribute(node.val)) {
+        f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, " + node.val + ", '</', '" + node.name + "', '>'].join('')", ['val', node.val])
       } else {
-        f = compile_new("return ['<', '" + node.name + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
+        f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
       }
     } else {
       if (node.val !== undefined) {
-        f = compile_new("return ['<', '" + node.name + "', '>', val, '" + node.val + "', '</', '" + node.name + "', '>'].join('')", ['val'])
+        f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, '" + node.val + "', '</', '" + node.name + "', '>'].join('')", ['val'])
       } else {
-        f = compile_new("return ['<', '" + node.name + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
+        f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
       }
     }
 
