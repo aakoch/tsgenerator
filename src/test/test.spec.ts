@@ -1,6 +1,6 @@
 import t from 'tap'
 // import { CliTransformer } from '../cliTransformer.js'
-// import { Generator } from '../index.js'
+// import { Generator } from '../index.ts'
 //
 // t.test('returns Hello world', t => {
 //   // t.pass('this passes')

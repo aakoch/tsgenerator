@@ -1,11 +1,12 @@
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
-import {TypeHandler} from "./@foo-dog/type-handler.js";
 import {TagHandler} from "./tag-handler.js";
 import {MixinHandler} from "./mixin-handler.js";
 import {MixinCallHandler} from "./mixin-call-handler.js";
 import {RootTypeHandler} from "./root-handler.js";
 import {AttrsEndHandler} from "./attrs-end-handler.js";
-import {UnbufCodeHandler} from "./unbuf-code-handler.js";
+import {CodeHandler} from "./code-handler.js";
+import { FooDogNode, TypeHandler } from "@foo-dog/types";
+import {CaseHandler} from "./case-handler.js";
+import {ConditionHandler} from "./condition-handler.js";
 
 export class TypeHandlerFactory {
 
@@ -56,7 +57,13 @@ export class TypeHandlerFactory {
     } else if (type === 'rootType') {
       handler = new RootTypeHandler(node);
     } else if (type === 'unbuf_code') {
-      handler = new UnbufCodeHandler(node);
+      handler = new CodeHandler(node);
+    } else if (type === 'case') {
+      handler = new CaseHandler(node);
+    } else if (type === 'when') {
+      handler = new ConditionHandler(node);
+    } else if (type === 'default') {
+      handler = new CaseHandler(node);
     } else {
       throw new Error("No handler for node type \"" + node.type + "\"");
     }

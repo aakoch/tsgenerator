@@ -1,5 +1,4 @@
-import {TypeHandler} from "./@foo-dog/type-handler.js";
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
+import {FooDogNode, TypeHandler } from '@foo-dog/types';
 import debugFunc from 'debug'
 
 const debug = debugFunc('generator: generic-type-handler.ts')

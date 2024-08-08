@@ -1,5 +1,6 @@
-import {Mixin} from "./@foo-dog/foo-dog-node.js";
 import debugFunc from "debug";
+import {Mixin} from "@foo-dog/types/dist/index.js";
+
 const debug = debugFunc("tsgenerator: GenericMixin")
 
 //export 

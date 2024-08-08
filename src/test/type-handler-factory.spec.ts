@@ -1,8 +1,8 @@
 import t from 'tap'
 // import { CliTransformer } from '../cliTransformer.js'
 import {Generator} from '../main/index.js'
-import {FooDogNode} from "../main/@foo-dog/foo-dog-node.js";
 import {TypeHandlerFactory} from "../main/type-handler-factory.js";
+import { FooDogNode } from '@foo-dog/types';
 
 t.test('assigning a variable to a tag', t => {
   let node = {

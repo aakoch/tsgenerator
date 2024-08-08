@@ -1,6 +1,6 @@
 import t from 'tap'
 import {Generator} from '../main/index.js'
-import {FooDogNode} from "../main/@foo-dog/foo-dog-node.js";
+import { FooDogNode } from '@foo-dog/types';
 
 t.test('attributes', async t => {
   const g = new Generator();

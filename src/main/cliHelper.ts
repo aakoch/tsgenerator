@@ -3,8 +3,10 @@ import path from 'path';
 import debugFunc from 'debug'
 import {Chalk, chalkStderr, supportsColorStderr} from 'chalk';
 import {CliTransformer} from './cliTransformer.js'
-import {parseArguments} from "@foo-dog/utils";
 import {inspect} from "util";
+import {parseArguments} from '@foo-dog/utils';
+import * as fs from "node:fs";
+import {Generator} from "./index.js";
 
 const debug = debugFunc('generator')
 
@@ -28,45 +30,48 @@ export function printUsage(console: Console = global.console): void {
   console.log(help.join('\n'))
 }
 
+const generator = new Generator()
 
 export async function run(): Promise<void> {
-  const options = await parseArguments(process, printUsage)
-  try {
-    options.in.createStream()
-    .pipe(new CliTransformer(options.in.name === 'stdin'))
-    .pipe(options.out.createStream());
+  await parseArguments(process, printUsage).then(async (ret: any) => {
+    const options = ret;
+    try {
+      // options.in.createStream()
+      // .pipe(new CliTransformer(options.in.name === 'stdin'))
+      // .pipe(options.out.createStream());
 
-    // if (options.in.name == 'stdin') {
-    //     let str = process.stdin.read();
-    //     if (str != null && str !== '') {
-    //       process.stdout.write(str)
-    //       const obj = generator.fromString(str)
-    //       const jsonString = JSON.stringify(obj, null, '  ');
-    //       if (options.out == 'stdout') {
-    //         process.stdout.write(jsonString)
-    //       }
-    //       else {
-    //         fs.writeFileSync(options.out, jsonString)
-    //       }
+      // if (options.in.name == 'stdin') {
+      //     let str = process.stdin.read();
+      //     if (str != null && str !== '') {
+      //       process.stdout.write(str)
+      //       const obj = generator.fromString(str)
+      //       const jsonString = JSON.stringify(obj, null, '  ');
+      //       if (options.out == 'stdout') {
+      //         process.stdout.write(jsonString)
+      //       }
+      //       else {
+      //         fs.writeFileSync(options.out, jsonString)
+      //       }
 
-    //   }
-    // }
-    // else {
-    //   const html = generator.fromString(fs.readFileSync(options.in.name))
-    //   if (options.out) {
-    //     if (options.out.name == 'stdout') {
-    //       process.stdout.write(html)
-    //     }
-    //     else {
-    //       fs.writeFileSync(options.out.name, html)
-    //     }
-    //   }
-    // }
-  } catch (e: any) {
-    if (supportsColorStderr) {
-      console.error(chalkStderr(chalk.red(e.message) + chalk.cyan("\noptions:" + inspect(options, false, 3, true))))
-    } else {
-      console.error('*'.repeat(30) + '\n' + e.message, e)
+      //   }
+      // }
+      // else {
+        const html = await generator.fromJson(JSON.parse(fs.readFileSync(options.in.name).toString('utf8')))
+        if (options.out) {
+          if (options.out.name == 'stdout') {
+            process.stdout.write(html)
+          }
+          else {
+            fs.writeFileSync(options.out.name, html)
+          }
+        }
+      // }
+    } catch (e: any) {
+      if (supportsColorStderr) {
+        console.error(chalkStderr(chalk.red(e.message) + chalk.cyan("\noptions:" + inspect(options, false, 3, true))))
+      } else {
+        console.error('*'.repeat(30) + '\n' + e.message, e)
+      }
     }
-  }
+  })
 }

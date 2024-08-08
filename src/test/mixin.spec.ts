@@ -1,9 +1,8 @@
 import t from 'tap'
 // import { CliTransformer } from '../cliTransformer.js'
-import {FooDogNode} from "../main/@foo-dog/foo-dog-node.js";
 import {TypeHandlerFactory} from "../main/type-handler-factory.js";
-import {TypeHandler} from "../main/@foo-dog/type-handler.js";
 import {RootTypeHandler} from "../main/root-handler.js";
+import { FooDogNode, TypeHandler } from '@foo-dog/types';
 
 t.test('simple mixin', t2 => {
 

@@ -1,3 +1,3 @@
-import { run } from './cliHelper.js'
+import {run} from './cliHelper.js'
 
 run()

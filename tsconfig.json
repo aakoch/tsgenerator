@@ -9,4 +9,14 @@
     "outDir": "build",
     "isolatedModules": true
   },
-}
+  "targets": {
+    "index": {
+      "source": "src/main/index.ts",
+      "distDir": "dist",
+      "isLibrary": true,
+      "optimize": false,
+      "context": "node",
+      "outputFormat": "esmodule"
+    }
+  }
+  }

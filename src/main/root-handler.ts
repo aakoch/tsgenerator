@@ -1,11 +1,9 @@
 import debugFunc from "debug";
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import {evil} from "./run.js";
 import {TypeHandlerFactory} from "./type-handler-factory.js";
-import {TypeHandler} from "./@foo-dog/type-handler.js";
+import {FooDogNode, TypeHandler } from "@foo-dog/types";
 
 const debug = debugFunc("tsgenerator: root-handler")
-
 
 export class RootTypeHandler implements TypeHandler {
 

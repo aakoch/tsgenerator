@@ -1,6 +1,4 @@
-import {inspect} from "util";
 import debugFunc from "debug";
-import {Mixin} from "./@foo-dog/foo-dog-node.js";
 // import {GenericMixin} from "./generic-mixin.js";
 const debug = debugFunc("tsgenerator: mixin-service")
 

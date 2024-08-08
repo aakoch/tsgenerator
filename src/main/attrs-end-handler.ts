@@ -1,7 +1,5 @@
 import debugFunc from "debug";
-import {Attribute, FooDogNode, FooDogNodeType} from "./@foo-dog/foo-dog-node.js";
-import {compile_new} from "./run.js";
-import {TypeHandler} from "./@foo-dog/type-handler.js";
+import {Attribute, FooDogNode, TypeHandler} from "@foo-dog/types/dist/index.js";
 
 const debug = debugFunc("tsgenerator: attrs-end-handler")
 

@@ -1,7 +1,7 @@
+import {FooDogNode} from '@foo-dog/types';
 import debugFunc from 'debug'
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import {inspect} from "util";
-import {TypeHandlerFactory} from './type-handler-factory.js'
+import {TypeHandlerFactory} from "./type-handler-factory.js";
 
 const debug = debugFunc('generator: index.ts')
 

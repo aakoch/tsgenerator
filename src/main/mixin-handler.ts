@@ -1,8 +1,7 @@
 import debugFunc from "debug";
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import mixinService from "./mixin-service.js";
 import {TypeHandlerFactory} from "./type-handler-factory.js";
-import {TypeHandler} from "./@foo-dog/type-handler.js";
+import {FooDogNode, TypeHandler } from "@foo-dog/types";
 
 const debug = debugFunc("tsgenerator: mixin-handler")
 
@@ -24,7 +23,7 @@ export class MixinHandler implements TypeHandler {
       throw new Error("Node 'val' was null or undefined");
     }
 
-    const [[, name, attrs]] = [...node.val!.matchAll(regex)];
+    const [[, name, attrs]] = [...(node.val as string)!.matchAll(regex)];
     debug("name=", name, ", attrs=", attrs)
 
     // TODO: expand this to more than just 1 child

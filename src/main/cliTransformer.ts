@@ -1,13 +1,11 @@
-import { fileURLToPath } from 'url';
-import fs from 'fs'
-import path from 'path';
+import {fileURLToPath} from 'url';
 import debugFunc from 'debug'
+import {Generator} from './index.js'
+import stream, {TransformCallback} from 'stream'
+import {inspect} from 'util';
+
 const debug = debugFunc('generator.cliTransformer')
-import chalk from 'chalk';
 const __filename = fileURLToPath(import.meta.url);
-import { Generator } from './index.js'
-import stream, { TransformCallback } from 'stream'
-import { inspect } from 'util';
 
 const generator = new Generator()
 

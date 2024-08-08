@@ -1,7 +1,6 @@
 import debugFunc from "debug";
-import {Attribute, FooDogNode} from "./@foo-dog/foo-dog-node.js";
 import {compile_new} from "./run.js";
-import {TypeHandler} from "./@foo-dog/type-handler.js";
+import {Attribute, FooDogNode, TypeHandler} from "@foo-dog/types";
 
 const debug = debugFunc("tsgenerator: tag-handler")
 
@@ -50,8 +49,8 @@ export class TagHandler implements TypeHandler {
       
     }
     if (node.assignment) {
-      if (node.val !== undefined && !isAttribute(node.val)) {
-        f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, " + node.val + ", '</', '" + node.name + "', '>'].join('')", ['val', node.val])
+      if (node.val !== undefined && !isAttribute(node.val) && node.val !== 'null' && node.val !== 'false') {
+        f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, (" + node.val + " || ''), '</', '" + node.name + "', '>'].join('')", ['val', node.val])
       } else {
         f = compile_new("return ['<', '" + node.name + "', '" + attrs + "', '>', val, '</', '" + node.name + "', '>'].join('')", ['val'])
       }

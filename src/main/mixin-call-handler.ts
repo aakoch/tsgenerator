@@ -1,8 +1,7 @@
 import {inspect} from "util";
 import debugFunc from "debug";
 import mixinService from "./mixin-service.js";
-import {FooDogNode} from "./@foo-dog/foo-dog-node.js";
-import {TypeHandler} from "./@foo-dog/type-handler.js";
+import {FooDogNode, TypeHandler } from "@foo-dog/types";
 
 const debug = debugFunc("tsgenerator: mixin-call-handler")
 

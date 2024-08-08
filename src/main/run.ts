@@ -37,6 +37,8 @@ const compile_new = function (code: string, variables: string[] = [], arrayName 
   
   debug('functionString=', functionString.toString())
   debug("...variables=", ...variables)
+  
+  variables = variables.filter((v) => v !== null && v !== undefined);
 
   let func: Function;
   if (variables.length > 0) {

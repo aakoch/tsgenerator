@@ -8,7 +8,7 @@
     "test run": "tap run src/test/run.spec.ts",
     "test mixin": "tap run src/test/mixin.spec.ts",
     "test attrs": "tap run src/test/attributes.spec.ts",
-    "test unbuf_code": "tap run src/test/unbuf_code.spec.ts",
+    "test code": "tap run src/test/code.spec.ts",
     "build": "parcel build --no-cache",
     "check": "tsc --noEmit"
   },
@@ -35,10 +35,14 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@foo-dog/types": "file:../types-project",
     "@foo-dog/utils": "file:../utils",
+    "@foo-dog/utils-types": "file:../utils-types",
+    "@types/unist": "^3.0.2",
     "chalk": "^5.3.0",
     "debug": "^4.3.4",
-    "jsdom": "^24.0.0"
+    "jsdom": "^24.0.0",
+    "unified": "^11.0.4"
   },
   "type": "module",
   "engines": {
